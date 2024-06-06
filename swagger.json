@@ -1,0 +1,893 @@
+{
+    "openapi": "3.0.0",
+    "info"   : {
+        "version"    : "1.0.0",
+        "description": "API for Social Media Application",
+        "title"      : "MINI FACEBOOK"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "JWT" : {
+                 "in"  : "header",
+                 "name": "Authorization",
+                 "type": "apiKey"
+            }
+        }
+    },
+    "paths": {
+       "/api/users/signup" : {
+        "post": {
+           "tags"       : ["Users"],
+           "summary"    : "Register",
+           "description": "Register yourself to login to the app",
+           "requestBody": {
+               "content" : {
+                "application/json" :{
+                "schema": {
+                   "type"      : "object",
+                   "properties": {
+                       "name": {
+                          "type": "string"
+                       },
+                       "email": {
+                           "type": "string"
+                       },
+                       "password" : {
+                           "type": "string"
+                       },
+                       "gender": {
+                           "type" : "string"
+                       }
+                   }
+                }
+
+                }
+               }
+            },
+           "responses": {
+               "200": {
+                   "description": "OK"
+               },
+               "400" : {
+                   "description": "Invalid details"
+               },
+               "500":{
+                  "description": "Internal Server Error"
+               }
+           }
+        }
+   },
+        "/api/users/signin" : {
+             "post": {
+                "tags"       : ["Users"],
+                "summary"    : "Login",
+                "description": "User login to provide the JWT token",
+                "requestBody": {
+                    "content" : {
+                     "application/json" :{
+                     "schema": {
+                        "type"      : "object",
+                        "properties": {
+                            "email": {
+                                "type": "string"
+                            },
+                            "password" : {
+                                "type": "string"
+                            }
+                        }
+                       }
+                     }
+                    }
+                 },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Invalid credentials"
+                    },
+                    "404" :{
+                        "description" : "User not found"
+                    },
+                    "500":{
+                        "description": "Internal Server Error"
+                    }
+                }
+             }
+        },
+
+        "api/users/logout": {
+            "get" :{
+                "tags"       : ["Users"],
+                "summary"    : "Logout",
+                "description": "User logout from his device",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404" : {
+                        "description": "User not found"
+                    },
+                    "500":{
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+
+        "/api/users/get-all-details": {
+            "get" :{
+                "tags"       : ["Users"],
+                "summary"    : "Logout",
+                "description": "Get all the details of the user",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404" : {
+                        "description": "User not found"
+                    },
+                    "500":{
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+       
+        "/api/users/get-details/{id}" : {
+            "get": {
+                "tags"       : ["Users"],
+                "summary"    : "Filter user details by ID",
+                "description": "Provide the user ID to get the details of the particular user",
+                "parameters" : [
+                 {
+                   "name"  : "id",
+                   "in"    : "path",
+                   "schema": {
+                     "type": "string"
+                   },
+                   "description": "Provide the user ID to get user details"
+                 }
+                ],
+                "security"   : [
+                 {"JWT" : {}}
+               ],
+                 "responses": {
+                     "200": {
+                         "description": "OK"
+                     },
+                     "400" : {
+                         "description": "Invalid credentials"
+                     },
+                     "404" :{
+                          "description" : "User not found"
+                     },
+                     "500":{
+                        "description": "Internal Server Error"
+                    }
+                 }
+             }
+        },
+        "/api/users/update-details/{id}" : {
+            "put": {
+                "tags"       : ["Users"],
+                "summary"    : "Update user details by ID",
+                "description": "Provide the user ID to update the details of the particular user",
+                "parameters" : [
+                 {
+                   "name"  : "id",
+                   "in"    : "path",
+                   "schema": {
+                     "type": "string"
+                   },
+                   "description": "Provide the user ID to update the details of the particular user"
+                 }
+                ],
+                "security"   : [
+                 {"JWT" : {}}
+               ],
+               "requestBody": {
+                "content" : {
+                 "application/json" :{
+                 "schema": {
+                    "type"      : "object",
+                    "properties": {
+                        "name": {
+                          "type": "string"
+                       },
+                       "email": {
+                           "type": "string"
+                       },
+                       "password" : {
+                           "type": "string"
+                       },
+                       "gender": {
+                           "type" : "string"
+                       }
+                    }
+                   }
+                 }
+                }
+             },
+                 "responses": {
+                     "200": {
+                         "description": "OK"
+                     },
+                     "400" : {
+                         "description": "Invalid credentials"
+                     },
+                     "404" :{
+                        "description" : "User not found"
+                      },
+                     "500":{
+                        "description": "Internal Server Error"
+                    }
+                 }
+             }
+        },
+
+        "/api/posts/": {
+            "post": {
+                "tags"       : ["Posts"],
+                "summary"    : "Add Posts to the site by the logged in User",
+                "description": "Logged in user will now have the access to add the posts to the site! Remember the size of post should be 30Kb otherwise it throws an internal server error",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "requestBody": {
+                    "required": true,
+                    "content" : {                   
+                    "multipart/form-data" :{
+                     "schema": {
+                        "type"      : "object",
+                        "properties": {
+                            "imageUrl" : {
+                                "type": "string",
+                                "format" : "binary",
+                                "required": true
+                            },
+                            "caption" :{
+                                "type" : "string",
+                                "required": true
+                            }
+                        }
+                       }
+                     }
+                    }
+                 },
+                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "get": {
+                "tags"       : ["Posts"],
+                "summary"    : "Get posts posted by logged in user",
+                "description": "Logged in user will now have the access to check the post posted by logged in user",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            }
+        },
+
+        "/api/posts/all": {
+            "get": {
+                "tags"       : ["Posts"],
+                "summary"    : "Get all posts posted by all the users",
+                "description": "Remember! to access this you need to be logged in via JWT token and you will get the posts posted by all the users",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            }
+        },
+
+        "/api/posts/{id}" :{
+            "put": {
+                "tags"       : ["Posts"],
+                "summary"    : "Updating the user posts",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can update his post",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Updating the post by providing post ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "requestBody": {
+                    "required": true,
+                    "content" : {                   
+                    "multipart/form-data" :{
+                     "schema": {
+                        "type"      : "object",
+                        "properties": {
+                            "imageUrl" : {
+                                "type": "string",
+                                "format" : "binary"
+                            },
+                            "caption" :{
+                                "type" : "string"
+                            }
+                        }
+                       }
+                     }
+                    }
+                 },
+                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "delete": {
+                "tags"       : ["Posts"],
+                "summary"    : "Deleting the user posts",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can delete his post",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Deleting the post by providing post ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "get" : {
+                "tags"       : ["Posts"],
+                "summary"    : "get the user post by post ID",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can get the post by providing post ID",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Retriving the post by providing post ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            }
+        },
+        "/api/comments/{id}" :{
+            "post":{
+                "tags"       : ["Comments"],
+                "summary"    : "Adding the comments to the post",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can add a comment to their post",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Adding the comment by providing post ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "requestBody": {
+                    "content" : {
+                     "application/json" :{
+                     "schema": {
+                        "type"      : "object",
+                        "properties": {
+                            "comment": {
+                              "type": "string"
+                           }
+                        }
+                       }
+                     }
+                    }
+                 },
+                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "put": {
+                "tags"       : ["Comments"],
+                "summary"    : "Updating the comment, commented by the user",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can update his comment",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Adding the comment by providing comment ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "requestBody": {
+                    "required": true,
+                    "content" : {                   
+                    "application/json" :{
+                     "schema": {
+                        "type"      : "object",
+                        "properties": {
+                            "comment" :{
+                                "type" : "string"
+                            }
+                        }
+                       }
+                     }
+                    }
+                 },
+                 "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post/ Comment not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "delete": {
+                "tags"       : ["Comments"],
+                "summary"    : "Deleting the user posts",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can delete his comment",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Deleting the comment using commentID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post/ Comment not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            },
+            "get" : {
+                "tags"       : ["Comments"],
+                "summary"    : "get the user comment by comment ID",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can get the comment by providing comment ID",
+                "parameters" : [
+                    {
+                      "name"  : "id",
+                      "in"    : "path",
+                      "schema": {
+                        "type": "string"
+                      },
+                      "description": "Retriving the comment using comment ID"
+                    }
+                   ],
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post/ Comment not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            }
+        },
+        "/api/likes/":{
+         "get":{
+                "tags"       : ["Likes"],
+                "summary"    : "Retriving the likes of the posts liked by user",
+                "description": "Remember! to access this you need to be logged in via JWT token then logged in user can get the likes that he liked on posts",
+                "security"   : [
+                    {"JWT" : {}}
+                  ],
+                  "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400" : {
+                        "description": "Bad request"
+                    },
+                    "404" :{
+                       "description" : "User/ Post/ Likes not found"
+                     },
+                    "500":{
+                       "description": "Internal Server Error"
+                   }
+                }
+            }
+        },
+        "/api/likes/toggle/":{
+            "get": {
+            "tags"       : ["Likes"],
+            "summary"    : "Adding or deleting(toggle) the likes of the post",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can toggle the likes that he liked on posts",
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "query",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "The ID of the post/comment to like or unlike"
+                },
+                {
+                  "name": "type",
+                  "in": "query",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "The type of item (e.g., Comments/ Post)"
+                }
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User/ Post/ Likes not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }
+        }
+    },
+     "/api/friends/get-pending-requests":{
+        "get":{
+            "tags"       : ["Friend"],
+            "summary"    : "Retrieving the pending requests for the user ",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can retreive the friendship request of the user",
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }
+         }
+       },
+       "/api/friends/get-friends/{id}":{
+        "get":{
+            "tags"       : ["Friend"],
+            "summary"    : "Sending friend request to the user",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can retreive the friendship request of the user",
+            "parameters" : [
+                {
+                  "name"  : "id",
+                  "in"    : "path",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Providing the User ID to make friend"
+                }
+               ],
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }
+         }
+       },
+       "/api/friends/toggle-friendship/{id}":{
+        "get":{
+            "tags"       : ["Friend"],
+            "summary"    : "Toggle(sending/ unsending) the friend request to your friend",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can toggle the friendship request of the user",
+            "parameters" : [
+                {
+                  "name"  : "id",
+                  "in"    : "path",
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "Providing the User ID to make friend"
+                }
+               ],
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }
+         }
+       },
+       "/api/friends/response-to-request/{id}":{
+        "get":{
+            "tags"       : ["Friend"],
+            "summary"    : "sending the response to the friend request to your friend",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can send the response to the friend request",
+            "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "The ID of the user(friend) to send /unsend the friend request"
+                },
+                {
+                  "name": "type",
+                  "in": "query",
+                  "required": true,
+                  "schema": {
+                    "type": "string"
+                  },
+                  "description": "The type of item (e.g., accept/ reject)"
+                }
+              ],
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }
+         }
+       },
+       "/api/otp/send":{
+        "post": {
+            "tags"       : ["OTP"],
+            "summary"    : "Sending OTP request",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can request an OTP by giving his email address",
+            "requestBody": {
+                "required": true,
+                "content" : {                   
+                "application/json" :{
+                 "schema": {
+                    "type"      : "object",
+                    "properties": {
+                        "email" :{
+                            "type" : "string"
+                        }
+                    }
+                   }
+                 }
+                }
+             },
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }       
+         }
+       },
+       "/api/otp/verify":{
+        "post": {
+            "tags"       : ["OTP"],
+            "summary"    : "Verify OTP request",
+            "description": "Remember! to access this you need to be logged in via JWT token then logged in user can verify the OTP by giving OTP recieved from his mail address",
+            "requestBody": {
+                "required": true,
+                "content" : {                   
+                "application/json" :{
+                 "schema": {
+                    "type"      : "object",
+                    "properties": {
+                        "otp" :{
+                            "type" : "string"
+                        }
+                    }
+                   }
+                 }
+                }
+             },
+            "security"   : [
+                {"JWT" : {}}
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400" : {
+                    "description": "Bad request"
+                },
+                "404" :{
+                   "description" : "User not found"
+                 },
+                "500":{
+                   "description": "Internal Server Error"
+               }
+            }       
+         }
+       }
+
+    }
+}
